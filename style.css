@@ -109,3 +109,20 @@ progress[value]::-webkit-progress-value {
     width: 100vw;
   }
 }
+@media screen and (orientation: portrait) {
+  html {
+    transform: rotate(-90deg);
+    transform-origin: left top;
+    width: 100vh;
+    height: 100vw;
+    overflow-x: hidden;
+    position: absolute;
+    top: 100%;
+    left: 0;
+  }
+  canvas {
+    margin: 0;
+    height: 100vw;
+    width: 100vh;
+  }
+}
