@@ -226,7 +226,22 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 const buttons = document.getElementsByClassName('btn');
-buttons[0].addEventListener('touchstart', function() { game.controls.jump = true; this.style.backgroundColor = "rgba(0,0,0,.7)"; });
-buttons[0].addEventListener('touchend', function() { game.controls.jump = false; game.player.upReleasedInAir = true; this.style.backgroundColor = "rgba(0,0,0,.4)"; });
-buttons[1].addEventListener('touchstart', function() { game.controls.slide = true; this.style.backgroundColor = "rgba(0,0,0,.7)"; });
-buttons[1].addEventListener('touchend', function() { game.controls.slide = false; this.style.backgroundColor = "rgba(0,0,0,.4)"; });
+buttons[0].addEventListener('touchstart', function(event) { event.preventDefault(); game.controls.jump = true; this.style.backgroundColor = "rgba(0,0,0,.7)"; });
+buttons[0].addEventListener('touchend', function(event) { event.preventDefault(); game.controls.jump = false; game.player.upReleasedInAir = true; this.style.backgroundColor = "rgba(0,0,0,.4)"; });
+buttons[1].addEventListener('touchstart', function(event) { event.preventDefault(); game.controls.slide = true; this.style.backgroundColor = "rgba(0,0,0,.7)"; });
+buttons[1].addEventListener('touchend', function(event) { event.preventDefault(); game.controls.slide = false; this.style.backgroundColor = "rgba(0,0,0,.4)"; });
+document.addEventListener('touchstart', preventZoom);
+document.addEventListener('click', function(event) {event.preventDefault();});
+document.addEventListener('dblclick', function(event) {event.preventDefault();});
+function preventZoom(e) {
+  var t2 = e.timeStamp;
+  var t1 = e.currentTarget.dataset.lastTouch || t2;
+  var dt = t2 - t1;
+  var fingers = e.touches.length;
+  e.currentTarget.dataset.lastTouch = t2;
+
+  if (!dt || dt > 500 || fingers > 1) return; // not double-tap
+
+  e.preventDefault();
+  e.target.click();
+}
