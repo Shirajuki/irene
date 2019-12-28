@@ -42,7 +42,7 @@ class gameState {
     this.dbJumpTime = 400;
     this.jumped = 0;
     //// PLAYER
-    this.objects = [new Object(-100, this.canvas.height - 52, 0,0,this.canvas.width+100, 35), new Platform(this.canvas.width, this.canvas.height - 130, -1,0,this.canvas.width, 30)];
+    this.objects = [new ObjectObject(-100, this.canvas.height - 52, 0,0,this.canvas.width+100, 35), new Platform(this.canvas.width, this.canvas.height - 130, -1,0,this.canvas.width, 30)];
     this.player = {
       "x": 100,
       "y": this.canvas.height - 90 - 60,

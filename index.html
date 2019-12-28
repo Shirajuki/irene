@@ -15,8 +15,11 @@
 
     <link rel="stylesheet" href="style.css">
     <script type="text/javascript">
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('service-worker.js');
+      }
     </script>
-    <!-- <script src="load.js" charset="utf-8"></script> -->
+    <script src="load.js" charset="utf-8"></script>
     <script src="gamestate.js" charset="utf-8"></script>
   </head>
   <body>
@@ -27,6 +30,6 @@
     <canvas id="canvasGUI" width="640" height="400"></canvas>
     <a class="btn up">▲</a>
     <a class="btn down">▼</a>
-    <!-- <script src="main.js" charset="utf-8"></script> -->
+    <script src="main.js" charset="utf-8"></script>
   </body>
 </html>

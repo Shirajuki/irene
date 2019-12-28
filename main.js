@@ -1,5 +1,5 @@
 // https://www.spriters-resource.com/mobile/cookierun/
-class Object {
+class ObjectObject {
   constructor(x,y,dx,dy,width,height) {
     this.y = y;
     this.x = x;
@@ -23,7 +23,7 @@ class Object {
     this.y += this.dy*game.bgScrollSpeed;
   }
 }
-class Platform extends Object{
+class Platform extends ObjectObject{
   constructor(x,y,dx,dy,width,height) {
     super(x,y,dx,dy,width,height);
     this.widthCount = Math.floor(this.width/platform.width);
@@ -36,7 +36,7 @@ class Platform extends Object{
     }
   }
 }
-class BGObjects extends Object {
+class BGObjects extends ObjectObject {
   constructor(x,y,dx,dy,width,height,paddingX,img,type="normal") {
     super(x,y,dx,dy,width,height);
     this.startX = x;
@@ -63,7 +63,7 @@ class BGObjects extends Object {
     }
   }
 }
-class Obstacles extends Object {
+class Obstacles extends ObjectObject {
   constructor(x,y,dx,dy,width,height,img,type) {
     super(x,y,dx,dy,width,height);
     this.img = img;
