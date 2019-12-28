@@ -11,19 +11,35 @@ div#menu {
   left: 50%;
   transform: translateX(-50%);
   background-color: black;
-  background: url(https://sa.kapamilya.com/absnews/abscbnnews/media/2019/news/05/27/korean.jpg) no-repeat center center;
+  background: url("rv.jpg") no-repeat center center;
   background-size: cover;
   width: 640px;
   height: 400px;
   transition: opacity .5s;
   z-index: 999;
 }
+div#menu2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: black;
+  width: 640px;
+  height: 400px;
+  transition: opacity 2s;
+  z-index: 999;
+}
+audio {
+  /* display: none; */
+}
 div.wrapper {
   position: relative;
   background-color: rgba(0,0,0,.7);
   width: 100%;
   height: 100%;
-  animation: flash2 .4s linear 3s;
+  animation: flash2 .3s linear 3s;
   animation-fill-mode: forwards;
 }
 div.wrapper > a.btn {
@@ -43,10 +59,24 @@ div#menu > div.wrapper > a.start {
   width: 510px;
   height: 55px;
   margin: 25px;
-  transform: translate(30%,-80%) scale(0.5);
+  transform: translate(25%,-80%) scale(0.5);
   background: url(font.png) 0 0;
   animation: flash .3s linear 1 3.5s, pop 1s ease infinite 4.5s;
   animation-fill-mode: forwards;
+}
+div#menu2 > a.start {
+  top: 50%;
+  left: 50%;
+  width: 240px;
+  height: 40px;
+  background: url(font.png) -170px 180px;
+  margin: 25px;
+  border-radius: 0;
+  transform: translate(-58%,-80%) scale(0.5);
+  animation: pop 1s ease infinite;
+  animation-fill-mode: forwards;
+  transition: opacity .1s;
+  display: none;
 }
 div#menu img {
   position: absolute;
@@ -61,7 +91,7 @@ div#menu img#logo {
   animation-fill-mode: forwards;
 }
 div#menu img#title {
-  top: 65%;
+  top: 70%;
   left: 25%;
   transform: translate(-50%,-50%);
   width: 50%;
@@ -193,6 +223,13 @@ progress[value]::-webkit-progress-value {
     width: 100vw;
   }
   div#menu {
+    margin: 0;
+    left: 0;
+    transform: None;
+    width: 100vw;
+    height: 100vh;
+  }
+  div#menu2 {
     margin: 0;
     left: 0;
     transform: None;

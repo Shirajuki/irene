@@ -171,6 +171,30 @@ function keyUpHandler(e) {
 // START ON TOUCH/CLICK
 canvasGUI2.addEventListener('click', startGame);
 document.getElementById('startBtn').addEventListener('click', startGame);
+document.getElementById('startBtn2').addEventListener('click', function() {
+  document.getElementById('menu').children[0].style.animation = "None";
+  document.getElementById('logo').style.animation = "None";
+  document.getElementById('title').style.animation = "None";
+  document.getElementById('startBtn').style.animation = "None";
+  this.style.animation = "None";
+  this.style.opacity = 0;
+  this.style.pointerEvents = "None";
+  document.getElementById('menu2').style.opacity = 0;
+  document.getElementById('menu2').style.pointerEvents = "None";
+  setTimeout(_=> {
+    dumbdumb.load();
+    dumbdumb.play();
+  },1000);
+  setTimeout(_=> {
+    document.getElementById('menu').children[0].style.animation = "flash2 .3s linear 3s";
+    document.getElementById('logo').style.animation = "fall .5s ease-in 2s";
+    document.getElementById('logo').style.animationFillMode = "forwards";
+    document.getElementById('title').style.animation = "flash .4s linear 3s";
+    document.getElementById('title').style.animationFillMode = "forwards";
+    document.getElementById('startBtn').style.animation = "flash .3s linear 1 3.5s, pop 1s ease infinite 4.5s";
+    document.getElementById('startBtn').style.animationFillMode = "forwards";
+  },100);
+});
 function startGame() {
   if (!game.clicked) {
     document.getElementById('menu').style.opacity = 0;
@@ -181,6 +205,8 @@ function startGame() {
     game.canvasBlack.style.opacity = 1;
     game.canvasGUI.style.opacity = 0;
     game.canvasGUI.style.animation = "None";
+    dumbdumb.load();
+    dumbdumb.pause();
     badboy.load();
     badboy.play();
     badboy.volume = 0.5;
@@ -257,13 +283,13 @@ function gameLoop() {
 const buttons = document.getElementsByClassName('btn');
 buttons[0].addEventListener('touchstart', function(event) {
   if (!game.gameOver) {
-    event.preventDefault(); game.controls.jump = true; this.style.backgroundColor = "rgba(0,0,0,.7)";
+    game.controls.jump = true; this.style.backgroundColor = "rgba(0,0,0,.7)";
   }
 });
 buttons[0].addEventListener('touchend', function(event) { event.preventDefault(); game.controls.jump = false; game.player.upReleasedInAir = true; this.style.backgroundColor = "rgba(0,0,0,.4)"; });
 buttons[1].addEventListener('touchstart', function(event) {
   if (!game.gameOver) {
-    event.preventDefault(); game.controls.slide = true; this.style.backgroundColor = "rgba(0,0,0,.7)";
+    game.controls.slide = true; this.style.backgroundColor = "rgba(0,0,0,.7)";
   }
 });
 buttons[1].addEventListener('touchend', function(event) { event.preventDefault(); game.controls.slide = false; this.style.backgroundColor = "rgba(0,0,0,.4)"; });

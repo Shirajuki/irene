@@ -100,8 +100,19 @@ badboy.addEventListener('canplaythrough', () => {
     checkLoaded();
   }
 }, false);
+// intro wav
+const dumbdumb = new Audio('dumbdumb.mp3');
+dumbdumb.addEventListener('canplaythrough', () => {
+  if (!gameLoaded) {
+    dumbdumb.volume = 0.4;
+    dumbdumb.loop = true;
+    loadedMusic++;
+    document.getElementById('menu2').children[0].style.display = "initial";
+    checkLoaded();
+  }
+}, false);
 function checkLoaded() {
-  if (loadedImg == 13 && loadedMusic == 1) {
+  if (loadedImg == 13 && loadedMusic == 2) {
     game.init();
     gameLoop();
     console.log("Start game");
