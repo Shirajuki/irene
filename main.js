@@ -256,13 +256,13 @@ function gameLoop() {
 }
 const buttons = document.getElementsByClassName('btn');
 buttons[0].addEventListener('touchstart', function(event) {
-  if (game.gameOver) {
+  if (!game.gameOver) {
     event.preventDefault(); game.controls.jump = true; this.style.backgroundColor = "rgba(0,0,0,.7)";
   }
 });
 buttons[0].addEventListener('touchend', function(event) { event.preventDefault(); game.controls.jump = false; game.player.upReleasedInAir = true; this.style.backgroundColor = "rgba(0,0,0,.4)"; });
 buttons[1].addEventListener('touchstart', function(event) {
-  if (game.gameOver) {
+  if (!game.gameOver) {
     event.preventDefault(); game.controls.slide = true; this.style.backgroundColor = "rgba(0,0,0,.7)";
   }
 });
