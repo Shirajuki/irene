@@ -1,6 +1,6 @@
 {
     "name": "Irene Run",
-    "short_name" : "Irene-run",
+    "short_name" : "irene-run",
     "start_url": "index.html?utm_source=homescreen",
     "scope" : "./",
     "icons": [
