@@ -2,9 +2,16 @@ class gameState {
   init() {
     //// CONFIG
     this.started = false;
-    // GUI
+    this.gameOver = false;
+    this.clicked = false;
     this.canvasBlack = document.getElementById("canvasBlack");
-    setTimeout(_=> this.canvasBlack.style.opacity = 0, 2500);
+    setTimeout(_=> this.canvasBlack.style.opacity = 0, 2200);
+    // GUI
+    this.canvasGUI2 = document.getElementById("canvasGUI2");
+    this.ctxGUI2 = this.canvasGUI2.getContext("2d");
+    this.ctxGUI2.webkitImageSmoothingEnabled = false;
+    this.ctxGUI2.imageSmoothingEnabled = false;
+
     this.canvasGUI = document.getElementById("canvasGUI");
     this.ctxGUI = this.canvasGUI.getContext("2d");
     this.ctxGUI.webkitImageSmoothingEnabled = false;
@@ -58,11 +65,26 @@ class gameState {
       "doubleJumping": false,
       "sliding": false,
       "hit": false,
+      "hitFrame": false,
       "invulnerable": false,
       "frameMax": 4,
       "frame": 0,
-      "frameTime": 0,
       "frameTimeMax": 2,
+      "frameTime": 0,
+    };
+    //// SASAENG
+    this.sasaeng = {
+      "x": -60,
+      "y": 264,
+      "width": 42,
+      "height": 84,
+      "pBumpCount": 0,
+      "bumpFadeTime": 0,
+      "bumpFadeTimeMax": 60*8,
+      "frameMax": 4,
+      "frame": 0,
+      "frameTimeMax": 2,
+      "frameTime": 0,
     };
     //// OBJECTS
     // BGObject
@@ -106,6 +128,9 @@ class gameState {
       this.ctxBG.save();
       this.ctxBG.translate(Math.random()*5, Math.random()*5);
     }
+    if (this.gameOver && badboy.volume-0.05 > 0) {
+      badboy.volume -= 0.05;
+    }
     this.bg1X -= this.bgScrollSpeed*0.1;
     this.bg2X -= this.bgScrollSpeed*0.1;
     if (this.bg1X <= -638) this.bg1X = 638;
@@ -115,20 +140,35 @@ class gameState {
     this.ctxFX.clearRect(0,0,this.canvasBG.width,this.canvasBG.height);
     // this.ctxBG.drawImage(bg,0,0,this.canvasBG.width,this.canvasBG.height,this.bg1X,0,this.canvasBG.width,this.canvasBG.height);
     // this.ctxBG.drawImage(bg,0,0,this.canvasBG.width,this.canvasBG.height,this.bg2X,0,this.canvasBG.width,this.canvasBG.height);
-    this.ctxBG.drawImage(bg2,2,2+322,860,318,this.bg1X,0,this.canvasBG.width,this.canvasBG.height);
-    this.ctxBG.drawImage(bg2,2,2+322,860,318,this.bg2X,0,this.canvasBG.width,this.canvasBG.height);
+    this.ctxBG.drawImage(bg2,2,2+322,857,317,this.bg1X,0,this.canvasBG.width,this.canvasBG.height);
+    this.ctxBG.drawImage(bg2,2,2+322,857,317,this.bg2X,0,this.canvasBG.width,this.canvasBG.height);
     if (this.screenShake) {
       this.ctxBG.restore();
     }
   }
-  playerIntro() {
-    this.player.x += 5;
+  introMove(obj,num) {
+    obj.x += num;
   }
   drawGUI() {
     this.ctxGUI.clearRect(0,0,this.canvasGUI.width,this.canvasGUI.height);
+    this.ctxGUI2.clearRect(0,0,this.canvasBG.width,this.canvasGUI2.height);
     this.ctxGUI.beginPath();
     if (!this.started) {
-      this.ctxGUI.drawImage(font, 0, 0, 510, 55, this.canvas.width/2 - 100, this.canvas.height/2, 200, 24); // START
+      if (!this.gameOver) {
+        this.ctxGUI.drawImage(font, 0, 0, 510, 55, this.canvas.width/2 - 100, this.canvas.height/2-100, 200, 24); // START
+      } else {
+        this.ctxGUI2.drawImage(font, 0, 55*5, 416, 55, this.canvas.width/2-100, this.canvas.height/2-100, 200, 24); // GameOver
+        this.ctxGUI2.drawImage(font, this.numbers[this.score100000000], 55, 50, 55, 5+this.canvas.width/4+45, this.canvas.height/2-50, 25, 25); // 0
+        this.ctxGUI2.drawImage(font, this.numbers[this.score10000000], 55, 50, 55, 30+this.canvas.width/4+45, this.canvas.height/2-50, 25, 25); // 0
+        this.ctxGUI2.drawImage(font, this.numbers[this.score1000000], 55, 50, 55, 55+this.canvas.width/4+45, this.canvas.height/2-50, 25, 25); // 0
+        this.ctxGUI2.drawImage(font, this.numbers[this.score100000], 55, 50, 55, 80+this.canvas.width/4+45, this.canvas.height/2-50, 25, 25); // 0
+        this.ctxGUI2.drawImage(font, this.numbers[this.score10000], 55, 50, 55, 105+this.canvas.width/4+45, this.canvas.height/2-50, 25, 25); // 0
+        this.ctxGUI2.drawImage(font, this.numbers[this.score1000], 55, 50, 55, 130+this.canvas.width/4+45, this.canvas.height/2-50, 25, 25); // 0
+        this.ctxGUI2.drawImage(font, this.numbers[this.score100], 55, 50, 55, 155+this.canvas.width/4+45, this.canvas.height/2-50, 25, 25); // 0
+        this.ctxGUI2.drawImage(font, this.numbers[this.score10], 55, 50, 55, 180+this.canvas.width/4+45, this.canvas.height/2-50, 25, 25); // 0
+        this.ctxGUI2.drawImage(font, this.numbers[this.score1], 55, 50, 55, 205+this.canvas.width/4+45, this.canvas.height/2-50, 25, 25); // 0
+        this.ctxGUI.drawImage(font, 0, 55*6, 570, 55, this.canvas.width/2-135, this.canvas.height/2, 280, 24); // GameOver
+      }
     } else {
       // this.ctxGUI.drawImage(font, 0, 55, 50, 55, 10, 10, 25, 25); // NOTE
       // this.ctxGUI.drawImage(font, 0, 112, 50, 55, 35, 17, 15, 15); // x
@@ -189,16 +229,55 @@ class gameState {
     } else {
       this.player.hit = false;
       this.player.invulnerable = true;
+      this.player.frame = 0;
+      this.player.hitFrame = true;
+      this.canvasBlack.style.backgroundColor = "rgb(255,0,0)";
+      this.canvasBlack.style.opacity = "0.7";
+      setTimeout(_=> {
+        this.canvasBlack.style.opacity = "0";
+      },200);
+      setTimeout(_=> this.canvasBlack.style.backgroundColor = "rgb(0,0,0)", 2000);
+      this.sasaeng.pBumpCount++;
+      this.sasaeng.bumpFadeTime = 0;
       this.bgScrollSpeed = -1*this.bgScrollSpeedMax;
       setTimeout(_=> this.player.invulnerable = false, 2000);
     }
   }
-  draw() {
-    if (this.bgScrollSpeed < this.bgScrollSpeedMax) {
-      this.bgScrollSpeed += 0.5;
+  over() {
+    if (!this.gameOver) {
+      this.gameOver = true;
+      this.started = false;
+      console.log("Game OVER!")
+      this.bgScrollSpeedMax = 0;
+      this.clicked = false;
+      this.canvasGUI2.style.opacity = "1";
+      this.canvasBlack.style.opacity = ".25";
+      setTimeout(_=> {
+        this.canvasBlack.style.opacity = ".5";
+      },201);
+
+      this.canvasBlack.style.backgroundColor = "rgb(0,0,0)";
+      this.canvasGUI.style.animation = "pop 1s ease infinite";
+
+      setTimeout(_=> {
+        this.objects = this.objects.slice(0,1);
+        this.obstacles = [];
+      },100);
     }
-    // FRAME
-    if (this.player.sliding) {
+  }
+  draw() {
+    if (this.bgScrollSpeed < this.bgScrollSpeedMax) { this.bgScrollSpeed += 0.5; }
+    if (this.gameOver && this.bgScrollSpeed > this.bgScrollSpeedMax) { this.bgScrollSpeed -= 0.05; }
+    // PLAYER FRAME
+    if (this.gameOver) {
+      this.player.frameMax = 2;
+      this.player.frameTimeMax = 30;
+      this.sasaeng.frameMax = 2;
+      this.sasaeng.frameTimeMax = 24;
+    } else if (this.player.hitFrame) {
+      this.player.frameMax = 1;
+      this.player.frameTimeMax = 24;
+    } else if (this.player.sliding) {
       this.player.frameMax = 2;
       this.player.frameTimeMax = 4;
     } else if (this.player.doubleJumping) {
@@ -215,10 +294,24 @@ class gameState {
       this.player.frame++;
       this.player.frameTime = 0;
       if (this.player.frame == this.player.frameMax) this.player.doubleJumping = false;
+      if (this.player.hitFrame && this.player.frame == this.player.frameMax) this.player.hitFrame = false;
     }
     else { this.player.frameTime++; }
     if (this.player.frame >= this.player.frameMax) this.player.frame = 0;
     if (this.player.frameTime > this.player.frameTimeMax) this.player.frameTime = 0;
+
+    // SASAENG FRAME
+    if (this.sasaeng.frameTime == this.sasaeng.frameTimeMax) {
+      this.sasaeng.frame++;
+      this.sasaeng.frameTime = 0;
+    }
+    else { this.sasaeng.frameTime++; }
+    if (this.sasaeng.frame >= this.sasaeng.frameMax) this.sasaeng.frame = 0;
+
+    // BUMPFADE TIME
+    if (this.sasaeng.bumpFadeTime == this.sasaeng.bumpFadeTimeMax) { this.sasaeng.bumpFadeTime = 0; this.sasaeng.pBumpCount = 0; }
+    else { this.sasaeng.bumpFadeTime++; }
+
     this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
     this.ctx.beginPath();
     this.ctx.lineWidth = 2;
@@ -227,15 +320,24 @@ class gameState {
     if (this.player.sliding) { slide = 2; height = this.player.height/2; }
     else { slide = 1; height = 0; }
     // this.ctx.strokeRect(this.player.x, this.player.y+height, this.player.width, this.player.height/slide); // og
+    // this.ctx.strokeRect(this.sasaeng.x, this.sasaeng.y, this.sasaeng.width, this.sasaeng.height); // og
     // this.ctx.drawImage(img, 48*this.player.frame, 0, 48, 48, this.player.x-24, this.player.y, this.player.width+48, this.player.height);
-    if (this.player.sliding) {
-      this.ctx.drawImage(cookie, 2+272*(9+this.player.frame), 2, 270, 270, this.player.x-74, this.player.y-95, 180, 180);
-    }else if (this.player.doubleJumping) {
-      this.ctx.drawImage(cookie, 2+272*this.player.frame, 2, 270, 270, this.player.x-74, this.player.y-95, 180, 180);
-    } else if (this.player.jumping && !this.player.doubleJumping) {
-      this.ctx.drawImage(cookie, 2+272*(7+this.player.frame), 2, 270, 270, this.player.x-74, this.player.y-95, 180, 180);
+    if (this.gameOver) {
+      this.ctx.drawImage(cookie, 2+272*(5+this.player.frame), 2+272*4, 270, 270, this.player.x-74, this.player.y-95, 180, 180);
+      this.ctx.drawImage(cookie2, 2+272*(6+this.sasaeng.frame), 2+272*2, 270, 270, this.sasaeng.x-74, this.sasaeng.y-95, 180, 180);
     } else {
-      this.ctx.drawImage(cookie, 2+272*this.player.frame, 2+272, 270, 270, this.player.x-74, this.player.y-95, 180, 180);
+      if (this.player.hitFrame) {
+        this.ctx.drawImage(cookie, 2+272*(5+this.player.frame), 2+272*4, 270, 270, this.player.x-74, this.player.y-95, 180, 180);
+      } else if (this.player.sliding) {
+        this.ctx.drawImage(cookie, 2+272*(9+this.player.frame), 2, 270, 270, this.player.x-74, this.player.y-95, 180, 180);
+      } else if (this.player.doubleJumping) {
+        this.ctx.drawImage(cookie, 2+272*this.player.frame, 2, 270, 270, this.player.x-74, this.player.y-95, 180, 180);
+      } else if (this.player.jumping && !this.player.doubleJumping) {
+        this.ctx.drawImage(cookie, 2+272*(7+this.player.frame), 2, 270, 270, this.player.x-74, this.player.y-95, 180, 180);
+      } else {
+        this.ctx.drawImage(cookie, 2+272*this.player.frame, 2+272, 270, 270, this.player.x-74, this.player.y-95, 180, 180);
+      }
+      this.ctx.drawImage(cookie2, 2+272*this.sasaeng.frame, 2+272, 270, 270, this.sasaeng.x-74, this.sasaeng.y-95, 180, 180);
     }
   }
   collide(object1, object2) {

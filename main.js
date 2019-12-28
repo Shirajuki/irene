@@ -92,19 +92,20 @@ if (/AppleWebKit.*Mobile/i.test(navigator.userAgent) || /Android|iPhone|Windows 
 };
 
 function keyDownHandler(e) {
-  // console.log(e.keyCode)
-  if(e.keyCode == 38) {
-    game.controls.jump = true;
-  }
-  else if(e.keyCode == 40) {
-    game.controls.slide = true;
-  }
-  else if(e.keyCode == 90) {
-    game.controls.special = true;
-  }
-  else if(e.keyCode == 32) {
-    console.log("SPACE debug");
-    spawnObstacles(randint(1,10));
+  if (!game.gameOver) {
+    if(e.keyCode == 38) {
+      game.controls.jump = true;
+    }
+    else if(e.keyCode == 40) {
+      game.controls.slide = true;
+    }
+    else if(e.keyCode == 90) {
+      game.controls.special = true;
+    }
+    else if(e.keyCode == 32) {
+      console.log("SPACE debug");
+      spawnObstacles(randint(1,10));
+    }
   }
 }
 function spawnObstacles(num) {
@@ -168,11 +169,28 @@ function keyUpHandler(e) {
   }
 }
 // START ON TOUCH/CLICK
-canvasGUI.addEventListener('click', function() {
-  // setTimeout(_=> badboy.play(), 3550);
-  game.started = true;
-  game.canvasGUI.style.animation = "None";
-});
+canvasGUI2.addEventListener('click', startGame);
+document.getElementById('startBtn').addEventListener('click', startGame);
+function startGame() {
+  if (!game.clicked) {
+    document.getElementById('menu').style.opacity = 0;
+    document.getElementById('menu').style.pointerEvents = "None";
+    game.init();
+    game.clicked = true;
+    game.canvasBlack.style.transition = "opacity 0s";
+    game.canvasBlack.style.opacity = 1;
+    game.canvasGUI.style.opacity = 0;
+    game.canvasGUI.style.animation = "None";
+    badboy.load();
+    badboy.play();
+    badboy.volume = 0.5;
+    setTimeout(_=> {
+      game.started = true;
+      game.canvasBlack.style.transition = "opacity .5s";
+      game.canvasGUI.style.opacity = 1;
+    },600)
+  }
+}
 
 function randint(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -186,15 +204,26 @@ function gameLoop() {
   game.draw();
   game.drawGUI();
   game.backgroundLoop();
-  if (game.started) {
-    game.updateScore();
+  if (game.started && !game.gameOver) {
     game.score++;
+    game.updateScore();
     if (randint(0,50) == 0) {
       if (millis() - game.lastSpawnTime > 2000) spawnObstacles(randint(1,10));
     }
   }
   // PLAYER INTRO ON-START
-  if (game.started && game.player.x < 200) game.playerIntro();
+  if (!game.gameOver) {
+    if (game.started && game.player.x < 200) game.introMove(game.player,5);
+    // Sasaeng move in/move out
+    if (game.sasaeng.pBumpCount == 1 && game.sasaeng.x < 100) game.introMove(game.sasaeng,5);
+    if (game.sasaeng.pBumpCount == 0 && game.sasaeng.x > -60) game.introMove(game.sasaeng,-5);
+  } else {
+    if (game.player.x < 300) game.introMove(game.player,5);
+    if (game.sasaeng.x < 200) game.introMove(game.sasaeng,5);
+  }
+  if (game.sasaeng.pBumpCount >= 2) {
+    game.over();
+  }
   // Platforms
   for (let i = game.objects.length-1; i >= 0; i--) {
     const obj = game.objects[i];
@@ -219,26 +248,32 @@ function gameLoop() {
     const obj = game.BGObjects[i];
     obj.draw();
     obj.move();
-    if (obj.x < -1*obj.width - obj.paddingX - 25) game.BGObjects.splice(i,1);
+    if (obj.x < -1*obj.width - obj.paddingX - 100) game.BGObjects.splice(i,1);
   }
   if (game.controls.slide) { game.player.sliding = true; }
   else { game.player.sliding = false; }
   requestAnimationFrame(gameLoop);
 }
 const buttons = document.getElementsByClassName('btn');
-buttons[0].addEventListener('touchstart', function(event) { event.preventDefault(); game.controls.jump = true; this.style.backgroundColor = "rgba(0,0,0,.7)"; });
+buttons[0].addEventListener('touchstart', function(event) {
+  if (game.gameOver) {
+    event.preventDefault(); game.controls.jump = true; this.style.backgroundColor = "rgba(0,0,0,.7)";
+  }
+});
 buttons[0].addEventListener('touchend', function(event) { event.preventDefault(); game.controls.jump = false; game.player.upReleasedInAir = true; this.style.backgroundColor = "rgba(0,0,0,.4)"; });
-buttons[1].addEventListener('touchstart', function(event) { event.preventDefault(); game.controls.slide = true; this.style.backgroundColor = "rgba(0,0,0,.7)"; });
+buttons[1].addEventListener('touchstart', function(event) {
+  if (game.gameOver) {
+    event.preventDefault(); game.controls.slide = true; this.style.backgroundColor = "rgba(0,0,0,.7)";
+  }
+});
 buttons[1].addEventListener('touchend', function(event) { event.preventDefault(); game.controls.slide = false; this.style.backgroundColor = "rgba(0,0,0,.4)"; });
 document.addEventListener('touchstart', preventZoom);
 document.addEventListener('click', function(event) {event.preventDefault();});
 document.addEventListener('dblclick', function(event) {event.preventDefault();});
 function preventZoom(e) {
   var t2 = e.timeStamp;
-  var t1 = e.currentTarget.dataset.lastTouch || t2;
-  var dt = t2 - t1;
+  var dt = t2 - 0;
   var fingers = e.touches.length;
-  e.currentTarget.dataset.lastTouch = t2;
 
   if (!dt || dt > 500 || fingers > 1) return; // not double-tap
 

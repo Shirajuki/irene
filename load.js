@@ -32,8 +32,15 @@ platform.onload = () => {
 };
 // Player Sprite
 const cookie = new Image();
-cookie.src = 'Sasaeng_Sprite.png';
+cookie.src = 'Irene Sprite_waifu2x.png';
 cookie.onload = () => {
+  loadedImg++;
+  checkLoaded();
+};
+// Sasaeng Sprite
+const cookie2 = new Image();
+cookie2.src = 'CreepyDoni_Sprite_waifu2x.png';
+cookie2.onload = () => {
   loadedImg++;
   checkLoaded();
 };
@@ -81,8 +88,20 @@ obstacle_high2.onload = () => {
   loadedImg++;
   checkLoaded();
 }
+//// Music
+let loadedMusic = 0;
+// Background wav
+const badboy = new Audio('badboy.mp3');
+badboy.addEventListener('canplaythrough', () => {
+  if (!gameLoaded) {
+    badboy.volume = 0.5;
+    badboy.loop = true;
+    loadedMusic++;
+    checkLoaded();
+  }
+}, false);
 function checkLoaded() {
-  if (loadedImg == 12) {
+  if (loadedImg == 13 && loadedMusic == 1) {
     game.init();
     gameLoop();
     console.log("Start game");
