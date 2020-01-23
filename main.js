@@ -1,3 +1,4 @@
+// https://www.hiclipart.com/free-transparent-background-png-clipart-qyqxw
 // https://www.spriters-resource.com/mobile/cookierun/
 class ObjectObject {
   constructor(x,y,dx,dy,width,height) {
@@ -294,8 +295,10 @@ buttons[1].addEventListener('touchstart', function(event) {
 });
 buttons[1].addEventListener('touchend', function(event) { event.preventDefault(); game.controls.slide = false; this.style.backgroundColor = "rgba(0,0,0,.4)"; });
 document.addEventListener('touchstart', preventZoom);
+// document.addEventListener('touchend', function(event) {event.preventDefault(); click();});
 document.addEventListener('click', function(event) {event.preventDefault();});
 document.addEventListener('dblclick', function(event) {event.preventDefault();});
+
 function preventZoom(e) {
   var t2 = e.timeStamp;
   var dt = t2 - 0;
@@ -305,4 +308,31 @@ function preventZoom(e) {
 
   e.preventDefault();
   e.target.click();
+}
+document.addEventListener("touchmove", touchMove, false);
+document.addEventListener("touchstart", touchStart, false);
+document.addEventListener("touchend", touchEnd, false);
+let touchStartX = 0, touchStartY = 0;
+let doubletap = false;
+function touchMove(e) {
+  if (!e) var e = event;
+
+  if(e.touches) {
+    if (e.touches.length == 1) { // Only deal with one finger
+        let touch = e.touches[0]; // Get the information for finger #1
+    } else {
+      return;
+    }
+  }
+}
+function touchStart(e) {
+  let touch = e.touches[0];
+  if (doubletap) { // Only deal with one finger
+    doubletap = false;
+  }
+  doubletap = true;
+  setTimeout(() => doubletap = false,200)
+}
+function touchEnd(e) {
+  game.shoot = false;
 }
